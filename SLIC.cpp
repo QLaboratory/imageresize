@@ -36,17 +36,20 @@ SLIC::~SLIC()
 
 	if(m_lvecvec)
 	{
-		for( int d = 0; d < m_depth; d++ ) delete [] m_lvecvec[d];
+		for( int d = 0; d < m_depth; d++ ) 
+			delete [] m_lvecvec[d];
 		delete [] m_lvecvec;
 	}
 	if(m_avecvec)
 	{
-		for( int d = 0; d < m_depth; d++ ) delete [] m_avecvec[d];
+		for( int d = 0; d < m_depth; d++ ) 
+			delete [] m_avecvec[d];
 		delete [] m_avecvec;
 	}
 	if(m_bvecvec)
 	{
-		for( int d = 0; d < m_depth; d++ ) delete [] m_bvecvec[d];
+		for( int d = 0; d < m_depth; d++ ) 
+			delete [] m_bvecvec[d];
 		delete [] m_bvecvec;
 	}
 }
@@ -138,9 +141,6 @@ void SLIC::DoRGBtoLABConversion(
 			
     for(int i=0;i<m_height;i++)
 	{
-        //int r = (ubuff[j] >> 16) & 0xFF;
-        //int g = (ubuff[j] >>  8) & 0xFF;
-        //int b = (ubuff[j]      ) & 0xFF;
 		for( int j = 0; j < m_width; j++ )
 		{			
 			int index = m_height*j + i;
@@ -515,9 +515,9 @@ void SLIC::PerformSuperpixelSLIC(
 	vector<double>&				kseedsb,
 	vector<double>&				kseedsx,
 	vector<double>&				kseedsy,
-        int*&					klabels,
+    	int*&					klabels,
         const int&				STEP,
-        const vector<double>&                   edgemag,
+    const vector<double>&       edgemag,
 	const double&				M)
 {
 	int sz = m_width*m_height;
@@ -983,9 +983,9 @@ void SLIC::EnforceSupervoxelLabelConnectivity(
 	const int SUPSZ = STEP*STEP*STEP;
 
 	int adjlabel(0);//adjacent label
-        int* xvec = new int[SUPSZ*10];//a large enough size
-        int* yvec = new int[SUPSZ*10];//a large enough size
-        int* zvec = new int[SUPSZ*10];//a large enough size
+    int* xvec = new int[SUPSZ*10];//a large enough size
+    int* yvec = new int[SUPSZ*10];//a large enough size
+    int* zvec = new int[SUPSZ*10];//a large enough size
 	//------------------
 	// memory allocation
 	//------------------
@@ -1086,9 +1086,12 @@ void SLIC::EnforceSupervoxelLabelConnectivity(
 	}}
 	delete [] nlabels;
 	//------------------
-	if(xvec) delete [] xvec;
-	if(yvec) delete [] yvec;
-	if(zvec) delete [] zvec;
+	if(xvec) 
+		delete [] xvec;
+	if(yvec) 
+		delete [] yvec;
+	if(zvec) 
+		delete [] zvec;
 	//------------------
 	numlabels = lab;
 	//------------------
@@ -1139,7 +1142,8 @@ void SLIC::DoSuperpixelSegmentation_ForGivenSuperpixelSize(
 	//klabels.resize( sz, -1 );
 	//--------------------------------------------------
 	klabels = new int[sz];
-	for( int s = 0; s < sz; s++ ) klabels[s] = -1;
+	for( int s = 0; s < sz; s++ ) 
+		klabels[s] = -1;
     //--------------------------------------------------
     if(1)//LAB, the default option
     {
@@ -1147,7 +1151,9 @@ void SLIC::DoSuperpixelSegmentation_ForGivenSuperpixelSize(
     }
     else//RGB
     {
-        m_lvec = new double[sz]; m_avec = new double[sz]; m_bvec = new double[sz];
+		m_lvec = new double[sz]; 
+		m_avec = new double[sz]; 
+		m_bvec = new double[sz];
         for( int i = 0; i < sz; i++ )
         {
                 m_lvec[i] = ubuff[i] >> 16 & 0xff;
@@ -1158,7 +1164,8 @@ void SLIC::DoSuperpixelSegmentation_ForGivenSuperpixelSize(
 	//--------------------------------------------------
     bool perturbseeds(true);//perturb seeds is not absolutely necessary, one can set this flag to false
 	vector<double> edgemag(0);
-	if(perturbseeds) DetectLabEdges(m_lvec, m_avec, m_bvec, m_width, m_height, edgemag);
+	if(perturbseeds) 
+		DetectLabEdges(m_lvec, m_avec, m_bvec, m_width, m_height, edgemag);
 	GetLABXYSeeds_ForGivenStepSize(kseedsl, kseedsa, kseedsb, kseedsx, kseedsy, STEP, perturbseeds, edgemag);
 
 	PerformSuperpixelSLIC(kseedsl, kseedsa, kseedsb, kseedsx, kseedsy, klabels, STEP, edgemag,compactness);
@@ -1166,8 +1173,12 @@ void SLIC::DoSuperpixelSegmentation_ForGivenSuperpixelSize(
 
 	int* nlabels = new int[sz];
 	EnforceLabelConnectivity(klabels, m_width, m_height, nlabels, numlabels, double(sz)/double(STEP*STEP));
-	{for(int i = 0; i < sz; i++ ) klabels[i] = nlabels[i];}
-	if(nlabels) delete [] nlabels;
+	{
+		for(int i = 0; i < sz; i++ ) 
+			klabels[i] = nlabels[i];
+	}
+	if(nlabels) 
+		delete [] nlabels;
 }
 
 //===========================================================================
@@ -1258,7 +1269,7 @@ void SLIC::DoSupervoxelSegmentation(
 	int sz = m_width*m_height;
 	
 	//--------------------------------------------------
-        //klabels = new int*[depth];
+    //klabels = new int*[depth];
 	m_lvecvec = new double*[depth];
 	m_avecvec = new double*[depth];
 	m_bvecvec = new double*[depth];

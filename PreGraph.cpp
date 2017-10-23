@@ -40,7 +40,8 @@ Mat PreGraph::GeneSp(const Mat &img)
 				reimg[c*(width*height) + i*height + j] = saturate_cast<unsigned int>(img.at<Vec3b>(j, i)[2 - c]);
 		}
 	}
-	int* label = new int[sz];
+	//int* label = new int[sz];
+	int *label = nullptr;
 	SLIC slic;
 	slic.DoSuperpixelSegmentation_ForGivenNumberOfSuperpixels(reimg, height, width, label, spNum, spNumMax, compactness);
 	Mat superpixels(img.size(), CV_16U);
@@ -52,7 +53,8 @@ Mat PreGraph::GeneSp(const Mat &img)
 			superpixels.at<ushort>(i, j) = label[i + j*superpixels.rows];
 		}
 	}
-	delete reimg, label;
+	delete [] reimg;
+	delete [] label;
 	return superpixels;
 }
 

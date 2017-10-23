@@ -34,8 +34,8 @@ public:
 		const int					height,
 		int*&						klabels,
 		int&						numlabels,
-                const int&					superpixelsize,
-                const double&                                   compactness);
+        const int&					superpixelsize,
+        const double&                                   compactness);
 	//============================================================================
 	// Superpixel segmentation for a given number of superpixels
 	//============================================================================

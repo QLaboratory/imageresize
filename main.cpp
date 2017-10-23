@@ -5,7 +5,10 @@
 using namespace std;
 
 //boost
-#include <boost/filesystem.hpp>  
+#include <boost/filesystem.hpp> 
+
+//openmp
+#include <omp.h> 
 
 //opencv
 #include <cv.h>
@@ -192,10 +195,19 @@ int main(int argc,char* argv[])
 	std::vector<std::string> file_name;
 	get_filenames(in_file_path,file_name);
 
+	#pragma omp parallel for
 	for(int i=0;i<file_name.size();i++)
 	{
-	    cout<<"Dealing "<<file_name[i]<<endl;
-	    image_resize(in_file_path+file_name[i],out_file_path+file_name[i],32);
+	    if(boost::filesystem::exists(out_file_path+file_name[i]))
+	    {
+   		printf("%d:Existed %s \n",i+1,file_name[i].c_str());
+		continue;
+	    }
+	    else
+	    {
+	        printf("%d:Dealing %s \n",i+1,file_name[i].c_str());
+	        image_resize(in_file_path+file_name[i],out_file_path+file_name[i],32);
+	    }
 	}
 	
 	return 0;

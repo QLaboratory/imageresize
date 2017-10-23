@@ -1,3 +1,0 @@
-/home/yan/Desktop/imageresize/build/CMakeFiles/edit_cache.dir
-/home/yan/Desktop/imageresize/build/CMakeFiles/rebuild_cache.dir
-/home/yan/Desktop/imageresize/build/CMakeFiles/ImageResize.dir

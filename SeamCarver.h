@@ -22,9 +22,6 @@ class SeamCarver {
 	//Compute the full energy matrix by scanning the whole image
 	void computeFullEnergy();
 
-	//Compute the energy function only for the pixels affected by seam-removal
-	void computeEnergyAfterSeamRemoval(vector<uint> seam);
-
 public:
 	SeamCarver(Mat_<Vec3b> im) 
 	{

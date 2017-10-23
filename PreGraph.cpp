@@ -127,7 +127,8 @@ vector<int> PreGraph::GeneBdQuery(const Mat &superpixels, const int type)
 
 int PreGraph::GeneFeature(const Mat &img, const Mat &superpixels, const int feaType, Mat &feaSpL, Mat &feaSpA, Mat &feaSpB, Mat &spNpix, Mat &spCnt)
 {
-	Mat feaMap = img;
+	Mat feaMap(img.size(),img.type());
+	img.copyTo(feaMap);
 	switch (feaType)
 	{
 	case 1:
@@ -139,11 +140,7 @@ int PreGraph::GeneFeature(const Mat &img, const Mat &superpixels, const int feaT
 	default:
 		break;
 	}
-	/*vector<float> feaSpL(spNum, 0);
-	vector<float> feaSpA(spNum, 0);
-	vector<float> feaSpB(spNum, 0);
-	vector<int> spNpix(spNum,0);*/
-	//vector< vector<float> > spCnt(spNum, vector<float>(2, 0));  	
+	
 	for (int i = 0; i < superpixels.rows; ++i)
 	{
 		for (int j = 0; j < superpixels.cols; ++j)
@@ -164,14 +161,7 @@ int PreGraph::GeneFeature(const Mat &img, const Mat &superpixels, const int feaT
 		spCnt.at<float>(i, 0) /= spNpix.at<float>(i);
 		spCnt.at<float>(i, 1) /= spNpix.at<float>(i);
 	}
-	/*double minv = 0;
-	double maxv = 0;
-	minMaxIdx(feaSpL, &minv, &maxv);
-	feaSpL = (feaSpL - minv) / (maxv - minv);
-	minMaxIdx(feaSpA, &minv, &maxv);
-	feaSpA = (feaSpA - minv) / (maxv - minv);
-	minMaxIdx(feaSpB, &minv, &maxv);
-	feaSpB = (feaSpB - minv) / (maxv - minv);*/
+
 	return 0;
 
 }
@@ -243,8 +233,6 @@ Mat PreGraph::GeneWeight(const vector<float> &feaSpL, const vector<float> &feaSp
 	Mat tmpsuperpixels;
 	normalize(weightMat, tmpsuperpixels, 255.0, 0.0, NORM_MINMAX);
 	tmpsuperpixels.convertTo(tmpsuperpixels, CV_8UC3, 1.0);
-	//imshow("sp", tmpsuperpixels);
-	//waitKey();
 	return weightMat;
 }
 

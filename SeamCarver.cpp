@@ -28,6 +28,7 @@ void SeamCarver::showHorizontalSeam(vector<uint> seam) {
 
 void SeamCarver::computeFullEnergy() {
 	//Ensure that the size of the energy matrix matches that of the image
+	energy.release();
 	energy.create(image.rows, image.cols, CV_32S);
 
 	//Scan through the image and update the energy values. Ignore boundary pixels.
@@ -51,27 +52,6 @@ void SeamCarver::computeFullEnergy() {
 			energy.at<uint32_t>(i, j) = val;
 		}
 	}
-}
-
-void SeamCarver::computeEnergyAfterSeamRemoval(vector<uint> seam) 
-{
-	Mat tmp = Mat(image.rows, image.cols, CV_32S, Scalar(195075));
-	for (unsigned int row = 0; row < (uint)image.rows; ++row) {
-		for (unsigned int col = 0; col < (uint)image.cols; ++col) {
-			if (col < seam[row]-1)	tmp.at<uint32_t>(row, col) = energy.at<uint32_t>(row, col);
-			if (col > seam[row])	tmp.at<uint32_t>(row, col) = energy.at<uint32_t>(row, col+1);
-			if (col == seam[row] || col == seam[row]-1) {
-				Vec3b l = image.at<Vec3b>(row, col-1);
-				Vec3b r = image.at<Vec3b>(row, col+1);
-				Vec3b u = image.at<Vec3b>(row-1, col);
-				Vec3b d = image.at<Vec3b>(row+1, col);
-				int val = (l[0]-r[0])*(l[0]-r[0]) + (l[1]-r[1])*(l[1]-r[1]) + (l[2]-r[2])*(l[2]-r[2]) +
-						(u[0]-d[0])*(u[0]-d[0]) + (u[1]-d[1])*(u[1]-d[1]) + (u[2]-d[2])*(u[2]-d[2]);
-				tmp.at<uint32_t>(row, col) = val;
-			}
-		}
-	}
-	energy = tmp;
 }
 
 vector<uint> SeamCarver::findVerticalSeam() 

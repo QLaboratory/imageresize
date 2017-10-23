@@ -19,7 +19,7 @@ using namespace cv;
 #include "SeamCarver.h"
 
 
-int image_resize(std::string image_name,std::string out_image_name,int image_size=200)
+int image_resize(std::string image_name,std::string out_image_name,int image_size=200,double size_ratio = 1.2)
 {
 	std::string image_path = image_name;
 
@@ -33,7 +33,7 @@ int image_resize(std::string image_name,std::string out_image_name,int image_siz
 	//judege need detection and seam_carving or not
 	double ratio = std::max(img.rows,img.cols)*1.0/std::min(img.rows,img.cols);
 	//threshold
-	if(ratio<1.2 || img.cols <= image_size || img.rows <= image_size)
+	if( ratio<size_ratio || img.cols <= image_size || img.rows <= image_size )
 	{
 		//normal resize
 		cv::resize(img, img, cv::Size(image_size, image_size), (0, 0), (0, 0), cv::INTER_CUBIC);
@@ -70,39 +70,39 @@ int image_resize(std::string image_name,std::string out_image_name,int image_siz
 
 	//ostu
 	Mat threshold_image;  
-    	threshold(tmpsuperpixels, threshold_image, 0, 255,CV_THRESH_OTSU);    	
+    threshold(tmpsuperpixels, threshold_image, 0, 255,CV_THRESH_OTSU);    	
 	//imshow("OSTU",threshold_image);
 	//waitKey();
 
 	//bound box detection
 	vector<vector<Point>> contours;  
-    	vector<Vec4i> hierarchy;  
-    	findContours(threshold_image,contours,hierarchy,RETR_TREE,CHAIN_APPROX_SIMPLE,Point());  
+    vector<Vec4i> hierarchy;  
+    findContours(threshold_image,contours,hierarchy,RETR_TREE,CHAIN_APPROX_SIMPLE,Point());  
    
 	//max and mini point
 	Point left_up(threshold_image.cols,threshold_image.rows),right_down(0,0);
-    	for(int i=0;i<contours.size();i++)  
+    for(int i=0;i<contours.size();i++)  
    	{  
-       		//contours[i]代表的是第i个轮廓，contours[i].size()代表的是第i个轮廓上所有的像素点数  
-        	for(int j=0;j<contours[i].size();j++)   
-        	{  
-            		//绘制出contours向量内所有的像素点  
-            		Point temp_point = Point(contours[i][j].x,contours[i][j].y);  
-           		if(temp_point.x < left_up.x)
+		//contours[i]代表的是第i个轮廓，contours[i].size()代表的是第i个轮廓上所有的像素点数  
+		for(int j=0;j<contours[i].size();j++)   
+		{  
+			//绘制出contours向量内所有的像素点  
+			Point temp_point = Point(contours[i][j].x,contours[i][j].y);  
+			if(temp_point.x < left_up.x)
 				left_up.x = temp_point.x;
-            		if(temp_point.y < left_up.y)
+			if(temp_point.y < left_up.y)
 				left_up.y = temp_point.y;
-           		if(temp_point.x > right_down.x)
+			if(temp_point.x > right_down.x)
 				right_down.x = temp_point.x;
-           		if(temp_point.y > right_down.y)
+			if(temp_point.y > right_down.y)
 				right_down.y = temp_point.y;
-        	}  
+		}  
   
-    	}  
+    }  
  	//rectangle(img,left_up,right_down,Scalar(255,255,255));
-    	//imshow("Object",img); 
+	//imshow("Object",img); 
 	//waitKey(0);
-	//destroyWindow("Object");
+	
 	
 	//seam_carving	
 	if(img.cols>img.rows)
@@ -188,13 +188,14 @@ int main(int argc,char* argv[])
 {
 	std::string in_file_path = argv[1];
 	std::string out_file_path = argv[2];
+	
 	std::vector<std::string> file_name;
 	get_filenames(in_file_path,file_name);
 
 	for(int i=0;i<file_name.size();i++)
 	{
 	    cout<<"Dealing "<<file_name[i]<<endl;
-	    image_resize(in_file_path+file_name[i],out_file_path+file_name[i],200);
+	    image_resize(in_file_path+file_name[i],out_file_path+file_name[i],32);
 	}
 	
 	return 0;
